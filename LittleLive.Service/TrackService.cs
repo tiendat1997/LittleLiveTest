@@ -103,5 +103,48 @@ namespace LittleLive.Service
             }
             return result;
         }
+        private async Task AppendSheetForEachSchool(ExcelWorksheets worksheets, School school)
+        {
+            var worksheet = worksheets.Add(school.Name);
+            worksheet.AppendHeader(typeof(ActivityExportHeader), 1);
+            IEnumerable<Entities.Class> efClasses = await this._unitOfWork.Classes.GetWithSchoolId(school.Id);
+            List<Guid> classIds = efClasses.Select(c => c.Id).ToList();
+            IEnumerable<Entities.Track> efTracks = await this._unitOfWork.Tracks.GetFullInformationByIds(classIds);
+            IEnumerable<Track> tracks = _mapper.Map<IEnumerable<Entities.Track>, IEnumerable<Track>>(efTracks);
+            int rowIndex = 1;
+            foreach (var track in tracks)
+            {
+                rowIndex++;
+                worksheet.Cells[rowIndex, ActivityExportHeader.ChildName.ColumnIndex].Value = track.ChildName;
+                worksheet.Cells[rowIndex, ActivityExportHeader.TimeCheckIn.ColumnIndex].Value = track.TimeCheckIn.ToLocalTime();
+                worksheet.Cells[rowIndex, ActivityExportHeader.TimeCheckOut.ColumnIndex].Value = track.TimeCheckOut.ToLocalTime();
+                worksheet.Cells[rowIndex, ActivityExportHeader.ClassName.ColumnIndex].Value = track.Class.Name;
+                worksheet.Cells[rowIndex, ActivityExportHeader.TeacherName.ColumnIndex].Value = track.Class.Teacher.Name;
+            }
+
+            worksheet.AutoFixColumns(typeof(ActivityExportHeader));
+        }
+
+        public async Task<byte[]> ExportActivityForHQOwner(Guid userId, Guid headQuarterId, Nullable<Guid> schoolId)
+        {
+            Entities.School headQuarter = await _unitOfWork.Schools.GetByIdIncludeClasses(headQuarterId);            
+
+            List<Guid> schoolIds = new List<Guid> { headQuarter.Id };
+            IEnumerable<Entities.School> efSchools = await _unitOfWork.Schools.FindIncludeClasses(s => s.ParentId.Equals(headQuarterId));
+            efSchools.Prepend(headQuarter);
+            IEnumerable<School> schools = _mapper.Map<IEnumerable<Entities.School>, IEnumerable<School>>(efSchools);
+            schools = schools.Where(s => !schoolId.HasValue || s.Id.Equals(schoolId.Value));
+            byte[] result;
+            using (var package = new ExcelPackage())
+            {
+                foreach (var school in schools)
+                {
+                    await AppendSheetForEachSchool(package.Workbook.Worksheets, school);                   
+                }
+
+                result = package.GetAsByteArray();
+            }
+            return result;
+        }
     }
 }

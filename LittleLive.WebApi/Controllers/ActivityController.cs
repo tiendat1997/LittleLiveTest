@@ -23,14 +23,17 @@ namespace LittleLive.WebApi.Controllers
         private readonly ITrackService _trackService;
         private readonly TeacherActivityExportRequestValidator _teacherActivityExportValidator;
         private readonly SchoolOwnerActivityExportRequestValidator _schoolOwnerActivityExportValidator;
+        private readonly HQOwnerActivityExportRequestValidator _hqOwnerActivityExportValidator;
         public ActivityController(
             ITrackService trackService,
             TeacherActivityExportRequestValidator teacherActivityExportValidator,
-            SchoolOwnerActivityExportRequestValidator schoolOwnerActivityExportValidator)
+            SchoolOwnerActivityExportRequestValidator schoolOwnerActivityExportValidator,
+            HQOwnerActivityExportRequestValidator hqOwnerActivityExportValidator)
         {
             _trackService = trackService;
             _teacherActivityExportValidator = teacherActivityExportValidator;
             _schoolOwnerActivityExportValidator = schoolOwnerActivityExportValidator;
+            _hqOwnerActivityExportValidator = hqOwnerActivityExportValidator;
         }
 
 
@@ -85,11 +88,28 @@ namespace LittleLive.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("ExportForHeadQuarter")]
+        [Route("ExportForHQOwner")]
         [Authorize(Policy = Policies.HQOnwer)]
-        public IActionResult ExportForHeadQuarter()
+        public async Task<IActionResult> ExportForHeadQuarterOwner(HQOwnerActivityExportRequest model)
         {
-            return Ok("This is a response from user method");
+            try
+            {
+                model.UserId = new Guid(User.Claims.First(s => s.Type.Equals(ClaimConfig.CLAIM_USER_ID)).Value);
+                var validationResult = await _hqOwnerActivityExportValidator.ValidateAsync(model);
+
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(validationResult.Errors);
+                }
+
+                byte[] bytes = await _trackService.ExportActivityForHQOwner(model.UserId, model.HeadQuarterId, model.SchoolId);
+                return File(bytes, ActivityExportByHQOwner.FileFormat, ActivityExportByHQOwner.Title);
+            }
+            catch (System.Exception ex)
+            {
+                // IMPLEMENT LOGGING HERE... 
+                return BadRequest(new BaseErrorMessage { Code = "export_failure", Message = ex.Message });
+            }
         }
     }
 }

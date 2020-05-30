@@ -20,9 +20,14 @@ namespace LittleLive.Data.Configurations
             builder
                 .HasOne(c => c.Teacher)
                 .WithMany(u => u.Classes)
+                .HasForeignKey(c => c.TeacherId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(c => c.School);
+            builder
+                .HasOne(s => s.School)
+                .WithMany(c => c.Classes)
+                .HasForeignKey(s => s.SchoolId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.ToTable("Classes");
         }

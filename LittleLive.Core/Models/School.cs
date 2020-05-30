@@ -12,5 +12,6 @@ namespace LittleLive.Core.Models
         public string Name { get; set; }
         public School? ParentSchool { get; set; }
         public PaymentType PaymentType { get; set; }
+        public List<Class> Classes { get; set; }
     }
 }

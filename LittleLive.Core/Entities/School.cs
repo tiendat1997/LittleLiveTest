@@ -18,5 +18,6 @@ namespace LittleLive.Core.Entities
         
         public PaymentType PaymentType { get; set; }
         public List<School>  ChildSchools { get; set; }
+        public List<Class> Classes { get; set; }
     }
 }

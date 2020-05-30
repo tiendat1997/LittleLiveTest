@@ -20,7 +20,8 @@ namespace LittleLive.WebApi.ViewModels
 
     public class HQOwnerActivityExportRequest
     {
-        public Guid SchoolId { get; set; }
+        public Guid HeadQuarterId { get; set; }
+        public Nullable<Guid> SchoolId { get; set; }
         public Guid UserId { get; set; }
     }
 }

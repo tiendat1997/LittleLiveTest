@@ -78,8 +78,9 @@ namespace LittleLive.WebApi
 
             services.AddTransient<TeacherActivityExportRequestValidator>();
             services.AddTransient<SchoolOwnerActivityExportRequestValidator>();
+            services.AddTransient<HQOwnerActivityExportRequestValidator>();
 
-            services.AddDbContext<LittleLiveDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default"), x => x.MigrationsAssembly("LittleLive.Data")));
+            services.AddDbContext<LittleLiveDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default"), x => x.MigrationsAssembly("LittleLive.Data")), ServiceLifetime.Transient);            
             services.AddAutoMapper(typeof(Startup));
         }
 

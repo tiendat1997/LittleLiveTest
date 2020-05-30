@@ -8,5 +8,6 @@ namespace LittleLive.Core.Repositories
     public interface IClassRepository : IRepository<Class>
     {
         Task<IEnumerable<Class>> GetWithSchoolId(Guid schoolId);
+        Task<IEnumerable<Class>> GetWithSchoolIds(List<Guid> schoolIds);
     }
 }

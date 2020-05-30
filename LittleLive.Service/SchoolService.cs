@@ -33,6 +33,12 @@ namespace LittleLive.Service
             return school;
         }
 
+        public bool IsSchoolBelongToHeadQuarter(Guid schoolId, Guid headQuarterId)
+        {
+            var efSchool = _unitOfWork.Schools.SingleOrDefault(c => c.Id.Equals(schoolId) && c.ParentId.Equals(headQuarterId));
+            return efSchool != null;
+        }
+
         public bool IsSchoolOwnByUserId(Guid schoolId, Guid ownerId)
         {
             var efSchool = _unitOfWork.Schools.SingleOrDefault(c => c.Id.Equals(schoolId) && c.OwnerId.Equals(ownerId));

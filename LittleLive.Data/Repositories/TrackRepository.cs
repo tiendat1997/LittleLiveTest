@@ -28,6 +28,7 @@ namespace LittleLive.Data.Repositories
                                                     .Include("Class")
                                                     .Include("Class.Teacher")
                                                     .Include("Class.School")
+                                                    .OrderByDescending(t => t.TimeCheckIn)
                                                     .ToListAsync();
             return efResult;
         }
@@ -38,6 +39,7 @@ namespace LittleLive.Data.Repositories
                                                     .Include("Class")
                                                     .Include("Class.Teacher")
                                                     .Include("Class.School")
+                                                    .OrderByDescending(t => t.TimeCheckIn)
                                                     .ToListAsync();
             return efResult;
         }      

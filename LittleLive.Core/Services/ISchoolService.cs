@@ -9,6 +9,7 @@ namespace LittleLive.Core.Service
     public interface ISchoolService
     {
         bool IsSchoolOwnByUserId(Guid schoolId, Guid ownerId);
+        bool IsSchoolBelongToHeadQuarter(Guid schoolId, Guid headQuarterId);        
         Task<IEnumerable<School>> GetAllSchools();
         School GetById(Guid schoolId);
     }

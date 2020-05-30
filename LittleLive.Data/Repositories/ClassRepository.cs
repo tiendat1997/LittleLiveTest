@@ -25,5 +25,12 @@ namespace LittleLive.Data.Repositories
 
             return efClasses;
         }
+
+        public async Task<IEnumerable<Class>> GetWithSchoolIds(List<Guid> schoolIds)
+        {
+            List<Class> efClasses = await this.DbSet.Where(c => schoolIds.Contains(c.SchoolId)).ToListAsync();
+
+            return efClasses;
+        }
     }
 }

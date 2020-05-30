@@ -27,7 +27,7 @@ namespace LittleLive.WebApi.Validators
                 .Must(VerifySchoolOwnByUser).WithMessage("User is not the owner of the school");            
 
             RuleFor(c => c)
-                .Must(VerifyRequireClassIdForPaymentFree).WithMessage("You must to enter ClassId For Free Planning School");
+                .Must(VerifyRequireClassIdForPaymentFree).WithMessage("The ClassId is required for the Free Plan");
 
             RuleFor(c => c)
                 .Must(VerifyClassBelongToTheSchool).WithMessage("Class does not belong to the school");

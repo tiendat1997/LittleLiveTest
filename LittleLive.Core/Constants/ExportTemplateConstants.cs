@@ -10,4 +10,9 @@
         public static string Title = "children-tracks-by-school-owner.xlsx";
         public static string FileFormat = "application/ms-excel";
     }
+    public static class ActivityExportByHQOwner
+    {
+        public static string Title = "children-tracks-by-hq-owner.xlsx";
+        public static string FileFormat = "application/ms-excel";
+    }
 }
