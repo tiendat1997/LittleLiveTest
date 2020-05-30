@@ -1,4 +1,4 @@
-﻿using LittleLive.Core.Models;
+﻿using LittleLive.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -12,9 +12,6 @@ namespace LittleLive.Data.Configurations
         public void Configure(EntityTypeBuilder<Class> builder)
         {
             builder.HasKey(c => c.Id);
-            builder
-                .Property(c => c.Id)
-                .UseIdentityColumn();
 
             builder
                 .Property(c => c.Name)

@@ -4,9 +4,9 @@ using System.Text;
 
 namespace LittleLive.Core.Models
 {
-    public enum PaymentType
+    public class BaseErrorMessage
     {
-        Free = 1,
-        Paid = 2
+        public string Code { get; set; }
+        public string Message { get; set; }
     }
 }

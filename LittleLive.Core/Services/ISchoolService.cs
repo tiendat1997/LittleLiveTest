@@ -8,6 +8,8 @@ namespace LittleLive.Core.Service
 {
     public interface ISchoolService
     {
+        bool IsSchoolOwnByUserId(Guid schoolId, Guid ownerId);
         Task<IEnumerable<School>> GetAllSchools();
+        School GetById(Guid schoolId);
     }
 }

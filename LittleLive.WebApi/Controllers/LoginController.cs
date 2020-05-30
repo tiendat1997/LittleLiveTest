@@ -5,7 +5,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using LittleLive.WebApi.Models;
+using LittleLive.Core.Models;
+using LittleLive.Core.Service;
+using LittleLive.WebApi.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -19,27 +21,30 @@ namespace LittleLive.WebApi.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration _config;
-
-        private List<User> appUsers = new List<User>
-        {
-            new User {  FullName = "Vaibhav Bhapkar",  UserName = "admin", Password = "1234", UserRole = "Admin" },
-            new User {  FullName = "Test User",  UserName = "user", Password = "1234", UserRole = "User" }
-        };
-
-        public LoginController(IConfiguration config)
+        private readonly IUserService _userService;
+       
+        public LoginController(IConfiguration config, IUserService userService)
         {
             _config = config;
+            _userService = userService;
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Login([FromBody]User login)
+        public async Task<IActionResult> Login([FromBody]LoginCredential login)
         {
             IActionResult response = Unauthorized();
-            User user = AuthenticateUser(login);
+            var user = await _userService.AuthenticateUser(login);
             if (user != null)
             {
-                var tokenString = GenerateJWTToken(user);
+                JWTResource jwtResource = new JWTResource
+                {
+                    SecretKey = _config["Jwt:SecretKey"],
+                    Issuer = _config["Jwt:Issuer"],
+                    Audience = _config["Jwt:Audience"]
+                };
+
+                var tokenString = JWTHelper.GenerateJWTToken(user, jwtResource);
                 response = Ok(new
                 {
                     token = tokenString,
@@ -47,35 +52,6 @@ namespace LittleLive.WebApi.Controllers
                 });
             }
             return response;
-        }
-
-        User AuthenticateUser(User loginCredentials)
-        {
-            User user = appUsers.SingleOrDefault(x => x.UserName == loginCredentials.UserName && x.Password == loginCredentials.Password);
-            return user;
-        }
-
-        string GenerateJWTToken(User userInfo)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, userInfo.UserName),
-                new Claim("fullName", userInfo.FullName.ToString()),
-                new Claim("role",userInfo.UserRole),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: credentials
-            );
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

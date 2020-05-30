@@ -12,10 +12,12 @@ namespace LittleLive.Data.Repositories
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         protected readonly DbContext Context;
+        protected readonly DbSet<TEntity> DbSet;
 
         public Repository(DbContext context)
         {
             this.Context = context;
+            this.DbSet = context.Set<TEntity>();
         }
         public async Task AddAsync(TEntity entity)
         {
@@ -36,6 +38,10 @@ namespace LittleLive.Data.Repositories
         {
             return await Context.Set<TEntity>().ToListAsync();
         }
+        public IEnumerable<TEntity> GetAll()
+        {
+            return Context.Set<TEntity>().ToList();
+        }
 
         public ValueTask<TEntity> GetByIdAsync(int id)
         {
@@ -55,6 +61,11 @@ namespace LittleLive.Data.Repositories
         public Task<TEntity> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return Context.Set<TEntity>().SingleOrDefaultAsync(predicate);
+        }
+
+        public TEntity SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
+        {
+            return Context.Set<TEntity>().SingleOrDefault(predicate);
         }
     }
 }

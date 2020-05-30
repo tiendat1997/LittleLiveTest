@@ -1,6 +1,6 @@
 ﻿using Bogus;
 using Bogus.Extensions.Italy;
-using LittleLive.Core.Models;
+using LittleLive.Core.Entities;
 using LittleLive.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -33,6 +33,7 @@ namespace LittleLive.Data
 
         protected void ApplySeeder(ModelBuilder builder)
         {
+            // Fake Users
             Faker<User> fakeUserRules = new Faker<User>()
                 .CustomInstantiator(u => new User { Id = Guid.NewGuid() })
                 .RuleFor(u => u.Role, f => f.PickRandom<Role>())
@@ -41,7 +42,7 @@ namespace LittleLive.Data
                 .RuleFor(u => u.UserName, (f, u) => f.Internet.UserName());
 
             List<User> mockUsers = new List<User>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 100; i++)
             {
                 mockUsers.Add(fakeUserRules.Generate());
             }
@@ -50,6 +51,7 @@ namespace LittleLive.Data
             List<User> hqOnwers = mockUsers.Where(u => u.Role.Equals(Role.HQOwner)).ToList();
             List<User> schoolOwners = mockUsers.Where(u => u.Role.Equals(Role.SchoolOwner)).ToList();
 
+            // Fake Head Quarter
             Faker<School> fakeHQSchoolRules = new Faker<School>()
                 .CustomInstantiator(f => new School { Id = Guid.NewGuid() })
                 .RuleFor(s => s.Code, f => $"SCHOOL{f.UniqueIndex}")
@@ -63,8 +65,57 @@ namespace LittleLive.Data
                 hqSchools.Add(fakeHQSchoolRules.Generate());
             }
 
+            // Fake Children Schools
+            Faker<School> fakeSchoolRules = new Faker<School>()
+                .CustomInstantiator(f => new School { Id = Guid.NewGuid() })
+                .RuleFor(s => s.Code, f => $"SCHOOL{f.UniqueIndex}")
+                .RuleFor(s => s.ParentId, f => f.PickRandom<Guid>(hqSchools.Select(h => h.Id).ToList()))
+                .RuleFor(s => s.OwnerId, f => f.PickRandom<Guid>(schoolOwners.Select(u => u.Id).ToList()))
+                .RuleFor(s => s.PaymentType, f => f.PickRandom<PaymentType>())
+                .RuleFor(s => s.Name, f => f.Company.CompanyName());
+
+            List<School> schools = new List<School>();
+            for (int i = 0; i < 50; i++)
+            {
+                schools.Add(fakeSchoolRules.Generate());
+            }
+
+            List<School> allSchools = new List<School>();
+            allSchools.AddRange(hqSchools);
+            allSchools.AddRange(schools);
+
+            // Fake Classes
+            Faker<Class> fakeClassRules = new Faker<Class>()
+                .CustomInstantiator(f => new Class { Id = Guid.NewGuid() })
+                .RuleFor(s => s.TeacherId, f => f.PickRandom<Guid>(teachers.Select(u => u.Id).ToList()))
+                .RuleFor(s => s.Name, f => f.Company.CompanyName())
+                .RuleFor(s => s.SchoolId, f => f.PickRandom<Guid>(allSchools.Select(s => s.Id).ToList()));
+
+            List<Class> classes = new List<Class>();
+            for (int i = 0; i < 500; i++)
+            {
+                classes.Add(fakeClassRules.Generate());
+            }
+
+            // Fake Track
+            int trackIndex = 1;
+            Faker<Track> fakeTrackRules = new Faker<Track>()
+                .CustomInstantiator(f => new Track {Id = trackIndex++ })
+                .RuleFor(s => s.ChildName, f => f.Name.FullName())
+                .RuleFor(s => s.ClassId, f => f.PickRandom<Guid>(classes.Select(c => c.Id).ToList()))
+                .RuleFor(s => s.TimeCheckIn, f => f.Date.RecentOffset().ToOffset(TimeSpan.Zero))
+                .RuleFor(s => s.TimeCheckOut, f => f.Date.SoonOffset().ToOffset(TimeSpan.Zero));
+
+            List<Track> tracks = new List<Track>();
+            for (int i = 0; i < 2000; i++)
+            {
+                tracks.Add(fakeTrackRules.Generate());
+            }
+
             builder.Entity<User>().HasData(mockUsers);
-            builder.Entity<School>().HasData(hqSchools);
+            builder.Entity<School>().HasData(allSchools);
+            builder.Entity<Class>().HasData(classes);
+            builder.Entity<Track>().HasData(tracks);
         }
     }
 }

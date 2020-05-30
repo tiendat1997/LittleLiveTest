@@ -1,4 +1,4 @@
-﻿using LittleLive.Core.Models;
+﻿using LittleLive.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

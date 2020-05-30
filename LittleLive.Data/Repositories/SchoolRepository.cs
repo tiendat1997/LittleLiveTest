@@ -1,8 +1,10 @@
-﻿using LittleLive.Core.Models;
+﻿using LittleLive.Core.Entities;
 using LittleLive.Core.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LittleLive.Data.Repositories
 {

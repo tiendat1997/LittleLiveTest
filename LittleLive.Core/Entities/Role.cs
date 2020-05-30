@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LittleLive.Core.Models
+namespace LittleLive.Core.Entities
 {
     public enum Role
     {
