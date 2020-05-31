@@ -12,5 +12,6 @@ namespace LittleLive.WebApi.Constants
         public static readonly string CLAIM_ROLE = "role";
         public static readonly string CLAIM_SUBSCRIPTION_TYPE = "subscriptionType";
         public static readonly string CLAIM_LICENSE_PLAN = "licensePlan";
+        public static readonly string CLAIM_COUNTRY_CODE = "countryCode";
     }
 }

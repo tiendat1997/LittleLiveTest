@@ -13,8 +13,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 namespace LittleLive.WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]    
-    [Authorize(Policy = Policies.Administrator)]
+    [Route("[controller]")]        
     [FeatureGate(LittleLiveFeatureFlags.GlobalAccessFlag)]
     public class UserController : ControllerBase
     {
@@ -32,6 +31,14 @@ namespace LittleLive.WebApi.Controllers
         [FeatureGate(RequirementType.All, LittleLiveFeatureFlags.LatePaymentUserFlag)]
         [Route("GetAdminData")]
         public IActionResult GetAdminData()
+        {
+            return Ok("This is a response from Admin method");
+        }
+
+        [HttpGet]
+        [FeatureGate(LittleLiveFeatureFlags.PercentageUserInSpecificCountryFlag)]
+        [Route("GetBetaData")]
+        public IActionResult GetBetaData()
         {
             return Ok("This is a response from Admin method");
         }

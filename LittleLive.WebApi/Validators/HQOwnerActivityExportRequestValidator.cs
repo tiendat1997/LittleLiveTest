@@ -21,7 +21,7 @@ namespace LittleLive.WebApi.Validators
                     .NotEqual(Guid.Empty).WithMessage("Head Quarter Id is required");
 
             RuleFor(c => c)
-                .Must(VerifySchoolOwnByUser).WithMessage("User is not the owner of the school");
+                .Must(VerifyHeadQuarterOwnByUser).WithMessage("User is not the owner of the head quarter");
 
             RuleFor(s => s)
                .Must(VerifyRequireSchoolIdForPaymentFree).WithMessage("School Id is required for the Free Plan");
@@ -37,7 +37,7 @@ namespace LittleLive.WebApi.Validators
             {
                 return true;
             }
-            else if (school.PaymentType.Equals(SchoolPayment.Free) && model.SchoolId.IsNullOrEmpty())
+            else if (school.SchoolPayment.Equals(SchoolPayment.Free) && model.SchoolId.IsNullOrEmpty())
             {
                 return false;
             }
@@ -55,7 +55,7 @@ namespace LittleLive.WebApi.Validators
             return true;
         }
 
-        private bool VerifySchoolOwnByUser(HQOwnerActivityExportRequest model)
+        private bool VerifyHeadQuarterOwnByUser(HQOwnerActivityExportRequest model)
         {
             return _schoolService.IsSchoolOwnByUserId(model.HeadQuarterId, model.UserId);
         }

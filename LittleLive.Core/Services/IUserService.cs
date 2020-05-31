@@ -10,5 +10,6 @@ namespace LittleLive.Core.Service
     public interface IUserService
     {
         Task<Models.User> AuthenticateUser(LoginCredential login);
+        Task<IEnumerable<Models.User>> GetUsersByCountryCode(string countryCode);
     }
 }

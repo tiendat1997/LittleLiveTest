@@ -24,7 +24,14 @@ namespace LittleLive.Data.Configurations
 
             builder
                 .Property(u => u.Role)
-                .IsRequired();  
+                .IsRequired();
+
+            builder
+                .Property(u => u.CountryId)
+                .IsRequired();
+
+            builder
+                .HasOne(u => u.Country);
 
             builder.ToTable("Users");
         }

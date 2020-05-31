@@ -24,10 +24,17 @@ namespace LittleLive.Service
 
         public async Task<User> AuthenticateUser(LoginCredential login)
         {
-            Entities.User efUser = await _unitOfWork.Users.SingleOrDefaultAsync(u => u.UserName.Equals(login.UserName) && u.Password.Equals(login.Password));
+            Entities.User efUser = await _unitOfWork.Users.GetUserInformation(login.UserName, login.Password);
             User user = _mapper.Map<Entities.User, User>(efUser);
 
             return user;
+        }
+
+        public async Task<IEnumerable<User>> GetUsersByCountryCode(string countryCode)
+        {
+            IEnumerable<Entities.User> efUsers = await _unitOfWork.Users.GetUsersByCountryCode(countryCode);
+            IEnumerable<User> users = _mapper.Map<IEnumerable<Entities.User>, IEnumerable<User>>(efUsers);
+            return users;
         }
     }
 }

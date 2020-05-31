@@ -12,6 +12,8 @@ namespace LittleLive.Core.Entities
         public string Name { get; set; }
         public string Password { get; set; }
         public Role Role { get; set; }
+        public Guid CountryId { get; set; }
+        public Country Country { get; set; }
         public SubscriptionType SubscriptionType { get; set; }
         public LicensePlan LicensePlan { get; set; }
         public List<Class> Classes { get; set; }

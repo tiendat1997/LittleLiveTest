@@ -26,6 +26,7 @@ using LittleLive.Core.Repositories;
 using Microsoft.FeatureManagement;
 using LittleLive.WebApi.Features;
 using Microsoft.FeatureManagement.FeatureFilters;
+using Microsoft.Extensions.Options;
 
 namespace LittleLive.WebApi
 {
@@ -72,7 +73,18 @@ namespace LittleLive.WebApi
                 config.AddPolicy(Policies.Teacher, Policies.TeacherPolicy());
                 config.AddPolicy(Policies.Administrator, Policies.AdministratorPolicy());
             });
-            
+
+            services.AddMemoryCache();
+            services.AddHttpContextAccessor();
+            services.AddFeatureManagement()
+                .AddFeatureFilter<PercentageFilter>()
+                .AddFeatureFilter<TrialUserFilter>()
+                .AddFeatureFilter<LatePaymentUserFilter>()
+                .AddFeatureFilter<NormalPlanFilter>()
+                .AddFeatureFilter<MediumPlanFilter>()
+                .AddFeatureFilter<EnterprisePlanFilter>()
+                .AddFeatureFilter<PercentageUserInSpecificCountryFeatureFilter>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddTransient<IUserService, UserService>();
@@ -82,19 +94,10 @@ namespace LittleLive.WebApi
 
             services.AddTransient<TeacherActivityExportRequestValidator>();
             services.AddTransient<SchoolOwnerActivityExportRequestValidator>();
-            services.AddTransient<HQOwnerActivityExportRequestValidator>();
+            services.AddTransient<HQOwnerActivityExportRequestValidator>();            
 
             services.AddDbContext<LittleLiveDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default"), x => x.MigrationsAssembly("LittleLive.Data")), ServiceLifetime.Transient);            
             services.AddAutoMapper(typeof(Startup));
-
-            services.AddHttpContextAccessor();
-            services.AddFeatureManagement()
-                .AddFeatureFilter<PercentageFilter>()
-                .AddFeatureFilter<TrialUserFilter>()
-                .AddFeatureFilter<LatePaymentUserFilter>()
-                .AddFeatureFilter<NormalPlanFilter>()
-                .AddFeatureFilter<MediumPlanFilter>()
-                .AddFeatureFilter<EnterprisePlanFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

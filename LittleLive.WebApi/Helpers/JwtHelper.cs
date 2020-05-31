@@ -26,6 +26,7 @@ namespace LittleLive.WebApi.Helpers
                 new Claim(ClaimConfig.CLAIM_ROLE,userInfo.Role.ToString()),
                 new Claim(ClaimConfig.CLAIM_SUBSCRIPTION_TYPE,userInfo.SubscriptionType.ToString()),
                 new Claim(ClaimConfig.CLAIM_LICENSE_PLAN,userInfo.LicensePlan.ToString()),
+                new Claim(ClaimConfig.CLAIM_COUNTRY_CODE,userInfo.Country.Code),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 

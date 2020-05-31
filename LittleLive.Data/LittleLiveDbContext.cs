@@ -17,12 +17,14 @@ namespace LittleLive.Data
         public DbSet<School> Schools { get; set; }
         public DbSet<Track> Tracks { get; set; }
         public DbSet<Class> Classes { get; set; }
+        public DbSet<Country> Country { get; set; }
         public LittleLiveDbContext(DbContextOptions<LittleLiveDbContext> options)
             : base(options)
         { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.ApplyConfiguration(new CountryConfiguration());
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new SchoolConfiguration());
             builder.ApplyConfiguration(new TrackConfiguration());
@@ -33,6 +35,18 @@ namespace LittleLive.Data
 
         protected void ApplySeeder(ModelBuilder builder)
         {
+            // Fake Countries 
+            Faker<Country> fakeCountryRules = new Faker<Country>()
+                .CustomInstantiator(u => new Country { Id = Guid.NewGuid() })
+                .RuleFor(u => u.Code, f => f.Address.CountryCode())
+                .RuleFor(u => u.Name, f => f.Address.Country());
+
+            List<Country> mockCountries = new List<Country>();
+            for (int i = 0; i < 5; i++)
+            {
+                mockCountries.Add(fakeCountryRules.Generate());
+            }
+
             // Fake Users
             Faker<User> fakeUserRules = new Faker<User>()
                 .CustomInstantiator(u => new User { Id = Guid.NewGuid() })
@@ -41,7 +55,8 @@ namespace LittleLive.Data
                 .RuleFor(u => u.LicensePlan, f => f.PickRandom<LicensePlan>())
                 .RuleFor(u => u.Password, f => f.Random.Number(100000, 999999).ToString())
                 .RuleFor(u => u.Name, (f, u) => f.Name.FullName())                
-                .RuleFor(u => u.UserName, (f, u) => f.Internet.UserName());
+                .RuleFor(u => u.UserName, (f, u) => f.Internet.UserName())
+                .RuleFor(u => u.CountryId, f => f.PickRandom<Guid>(mockCountries.Select(u => u.Id).ToList()));
 
             List<User> mockUsers = new List<User>();
             for (int i = 0; i < 100; i++)
@@ -114,6 +129,7 @@ namespace LittleLive.Data
                 tracks.Add(fakeTrackRules.Generate());
             }
 
+            builder.Entity<Country>().HasData(mockCountries);
             builder.Entity<User>().HasData(mockUsers);
             builder.Entity<School>().HasData(allSchools);
             builder.Entity<Class>().HasData(classes);
