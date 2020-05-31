@@ -37,7 +37,7 @@ namespace LittleLive.WebApi.Validators
             {
                 return true;
             }
-            else if (school.PaymentType.Equals(PaymentType.Free) && model.SchoolId.IsNullOrEmpty())
+            else if (school.PaymentType.Equals(SchoolPayment.Free) && model.SchoolId.IsNullOrEmpty())
             {
                 return false;
             }

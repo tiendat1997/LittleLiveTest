@@ -23,6 +23,9 @@ using Microsoft.OpenApi.Models;
 using AutoMapper;
 using LittleLive.WebApi.Validators;
 using LittleLive.Core.Repositories;
+using Microsoft.FeatureManagement;
+using LittleLive.WebApi.Features;
+using Microsoft.FeatureManagement.FeatureFilters;
 
 namespace LittleLive.WebApi
 {
@@ -64,9 +67,10 @@ namespace LittleLive.WebApi
 
             services.AddAuthorization(config =>
             {
-                config.AddPolicy(Policies.HQOnwer, Policies.HQOwnerPolicy());
+                config.AddPolicy(Policies.HQOwner, Policies.HQOwnerPolicy());
                 config.AddPolicy(Policies.SchoolOwner, Policies.SchoolOwnerPolicy());
                 config.AddPolicy(Policies.Teacher, Policies.TeacherPolicy());
+                config.AddPolicy(Policies.Administrator, Policies.AdministratorPolicy());
             });
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -82,6 +86,15 @@ namespace LittleLive.WebApi
 
             services.AddDbContext<LittleLiveDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default"), x => x.MigrationsAssembly("LittleLive.Data")), ServiceLifetime.Transient);            
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddHttpContextAccessor();
+            services.AddFeatureManagement()
+                .AddFeatureFilter<PercentageFilter>()
+                .AddFeatureFilter<TrialUserFilter>()
+                .AddFeatureFilter<LatePaymentUserFilter>()
+                .AddFeatureFilter<NormalPlanFilter>()
+                .AddFeatureFilter<MediumPlanFilter>()
+                .AddFeatureFilter<EnterprisePlanFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

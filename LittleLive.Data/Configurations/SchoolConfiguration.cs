@@ -23,7 +23,7 @@ namespace LittleLive.Data.Configurations
                 .HasMaxLength(50);
 
             builder
-                .Property(s => s.PaymentType)
+                .Property(s => s.SchoolPayment)
                 .IsRequired();
 
             builder

@@ -4,11 +4,10 @@ using System.Text;
 
 namespace LittleLive.Core.Entities
 {
-    public enum Role
+    public enum LicensePlan
     {
-        HQOwner = 1,
-        SchoolOwner = 2,
-        Teacher = 3,
-        Administrator = 4
+        Normal = 1,
+        Premium = 2,
+        Enterprise = 3
     }
 }

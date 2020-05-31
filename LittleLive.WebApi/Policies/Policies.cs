@@ -8,9 +8,10 @@ namespace LittleLive.WebApi
 {
     public static class Policies
     {
-        public const string HQOnwer = "HQOwner";
+        public const string HQOwner = "HQOwner";
         public const string SchoolOwner = "SchoolOwner";
         public const string Teacher = "Teacher";
+        public const string Administrator = "Administrator";
 
         public static AuthorizationPolicy HQOwnerPolicy()
         {
@@ -33,6 +34,14 @@ namespace LittleLive.WebApi
             var adminPolicyBuilder = new AuthorizationPolicyBuilder()
                                         .RequireAuthenticatedUser()
                                         .RequireRole(Core.Entities.Role.Teacher.ToString());
+            return adminPolicyBuilder.Build();
+        }
+
+        public static AuthorizationPolicy AdministratorPolicy()
+        {
+            var adminPolicyBuilder = new AuthorizationPolicyBuilder()
+                                        .RequireAuthenticatedUser()
+                                        .RequireRole(Core.Entities.Role.Administrator.ToString());
             return adminPolicyBuilder.Build();
         }
     }

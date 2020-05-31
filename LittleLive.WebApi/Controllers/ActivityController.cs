@@ -2,11 +2,13 @@
 using LittleLive.Core.Models;
 using LittleLive.Core.Services;
 using LittleLive.WebApi.Constants;
+using LittleLive.WebApi.Features;
 using LittleLive.WebApi.Validators;
 using LittleLive.WebApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.FeatureManagement.Mvc;
 using OfficeOpenXml;
 using System;
 using System.Linq;
@@ -36,10 +38,10 @@ namespace LittleLive.WebApi.Controllers
             _hqOwnerActivityExportValidator = hqOwnerActivityExportValidator;
         }
 
-
+        // NORMAL PLAN
         [HttpPost]
         [Route("ExportForTeacher")]
-        [Authorize(Policy = Policies.Teacher)]
+        [Authorize(Policy = Policies.Teacher)]      
         public async Task<IActionResult> ExportActivityForTeacher(TeacherActivityExportRequest model)
         {
             try
@@ -62,6 +64,7 @@ namespace LittleLive.WebApi.Controllers
             }
         }
 
+        // MEDIUM PLAN
         [HttpPost]
         [Route("ExportForSchoolOwner")]
         [Authorize(Policy = Policies.SchoolOwner)]
@@ -87,9 +90,10 @@ namespace LittleLive.WebApi.Controllers
             }
         }
 
+        // ENTERPRISE PLAN
         [HttpPost]
         [Route("ExportForHQOwner")]
-        [Authorize(Policy = Policies.HQOnwer)]
+        [Authorize(Policy = Policies.HQOwner)]
         public async Task<IActionResult> ExportForHeadQuarterOwner(HQOwnerActivityExportRequest model)
         {
             try

@@ -11,5 +11,7 @@ namespace LittleLive.Core.Models
         public string Name { get; set; }
         public string Password { get; set; }
         public Entities.Role Role { get; set; }
+        public Entities.SubscriptionType SubscriptionType { get; set; }
+        public Entities.LicensePlan LicensePlan { get; set; }
     }
 }

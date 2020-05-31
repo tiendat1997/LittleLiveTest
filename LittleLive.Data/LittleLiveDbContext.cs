@@ -37,6 +37,8 @@ namespace LittleLive.Data
             Faker<User> fakeUserRules = new Faker<User>()
                 .CustomInstantiator(u => new User { Id = Guid.NewGuid() })
                 .RuleFor(u => u.Role, f => f.PickRandom<Role>())
+                .RuleFor(u => u.SubscriptionType, f => f.PickRandom<SubscriptionType>())
+                .RuleFor(u => u.LicensePlan, f => f.PickRandom<LicensePlan>())
                 .RuleFor(u => u.Password, f => f.Random.Number(100000, 999999).ToString())
                 .RuleFor(u => u.Name, (f, u) => f.Name.FullName())                
                 .RuleFor(u => u.UserName, (f, u) => f.Internet.UserName());
@@ -56,7 +58,7 @@ namespace LittleLive.Data
                 .CustomInstantiator(f => new School { Id = Guid.NewGuid() })
                 .RuleFor(s => s.Code, f => $"SCHOOL{f.UniqueIndex}")
                 .RuleFor(s => s.OwnerId, f => f.PickRandom<Guid>(hqOnwers.Select(u => u.Id).ToList()))
-                .RuleFor(s => s.PaymentType, f => f.PickRandom<PaymentType>())
+                .RuleFor(s => s.SchoolPayment, f => f.PickRandom<SchoolPayment>())
                 .RuleFor(s => s.Name, f => f.Company.CompanyName());
 
             List<School> hqSchools = new List<School>();
@@ -71,7 +73,7 @@ namespace LittleLive.Data
                 .RuleFor(s => s.Code, f => $"SCHOOL{f.UniqueIndex}")
                 .RuleFor(s => s.ParentId, f => f.PickRandom<Guid>(hqSchools.Select(h => h.Id).ToList()))
                 .RuleFor(s => s.OwnerId, f => f.PickRandom<Guid>(schoolOwners.Select(u => u.Id).ToList()))
-                .RuleFor(s => s.PaymentType, f => f.PickRandom<PaymentType>())
+                .RuleFor(s => s.SchoolPayment, f => f.PickRandom<SchoolPayment>())
                 .RuleFor(s => s.Name, f => f.Company.CompanyName());
 
             List<School> schools = new List<School>();

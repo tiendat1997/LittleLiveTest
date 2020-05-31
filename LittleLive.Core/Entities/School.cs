@@ -16,7 +16,7 @@ namespace LittleLive.Core.Entities
         public Guid OwnerId { get; set; }        
         public User Owner { get; set; }  
         
-        public PaymentType PaymentType { get; set; }
+        public SchoolPayment SchoolPayment { get; set; }
         public List<School>  ChildSchools { get; set; }
         public List<Class> Classes { get; set; }
     }
