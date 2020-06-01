@@ -17,7 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace LittleLive.WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]")]    
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration _config;

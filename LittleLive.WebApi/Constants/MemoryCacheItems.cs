@@ -9,5 +9,6 @@ namespace LittleLive.WebApi.Constants
     {
         public static readonly string PercentageUsers = "PercentageUsers";
         public static readonly string PercentageUsersCountry = "RandomPercentageUsers_Country";
+        public static readonly string AllowedDevices = "AllowedDevices";
     }
 }

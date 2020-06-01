@@ -16,6 +16,7 @@ namespace LittleLive.WebApi.Features
         public const string EnterprisePlanFlag = "EnterprisePlanFlag";
 
         public const string PercentageUserInSpecificCountryFlag = "PercentageUserInSpecificCountryFlag";
+        public const string DeviceTypeFlag = "DeviceTypeFlag";
     }
 
     public static class LittleLiveFilterAlias
@@ -26,6 +27,7 @@ namespace LittleLive.WebApi.Features
         public const string PremiumPlanFilter = "LicensePlanning_Premium";
         public const string EnterprisePlanFilter = "LicensePlanning_Enterprise";
         public const string PercentageUserInSpecificCountryFilter = "PercentageUserInSpecificCountry";
+        public const string DeviceTypeFilter = "DeviceTypeFilter";
     }
 }
 

@@ -20,6 +20,7 @@ namespace LittleLive.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [FeatureGate(LittleLiveFeatureFlags.DeviceTypeFlag)]
     public class ActivityController : Controller
     {
         private readonly ITrackService _trackService;

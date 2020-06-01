@@ -27,6 +27,7 @@ using Microsoft.FeatureManagement;
 using LittleLive.WebApi.Features;
 using Microsoft.FeatureManagement.FeatureFilters;
 using Microsoft.Extensions.Options;
+using LittleLive.WebApi.Middlewares;
 
 namespace LittleLive.WebApi
 {
@@ -73,8 +74,12 @@ namespace LittleLive.WebApi
                 config.AddPolicy(Policies.Teacher, Policies.TeacherPolicy());
                 config.AddPolicy(Policies.Administrator, Policies.AdministratorPolicy());
             });
+            services.AddMemoryCache();                        
+            
+            // Add detection services container and device resolver service.
+            services.AddDetection();
 
-            services.AddMemoryCache();
+            // Add feature management filters
             services.AddHttpContextAccessor();
             services.AddFeatureManagement()
                 .AddFeatureFilter<PercentageFilter>()
@@ -83,7 +88,8 @@ namespace LittleLive.WebApi
                 .AddFeatureFilter<NormalPlanFilter>()
                 .AddFeatureFilter<MediumPlanFilter>()
                 .AddFeatureFilter<EnterprisePlanFilter>()
-                .AddFeatureFilter<PercentageUserInSpecificCountryFeatureFilter>();
+                .AddFeatureFilter<PercentageUserInSpecificCountryFeatureFilter>()
+                .AddFeatureFilter<DeviceTypeFeatureFilter>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -94,7 +100,7 @@ namespace LittleLive.WebApi
 
             services.AddTransient<TeacherActivityExportRequestValidator>();
             services.AddTransient<SchoolOwnerActivityExportRequestValidator>();
-            services.AddTransient<HQOwnerActivityExportRequestValidator>();            
+            services.AddTransient<HQOwnerActivityExportRequestValidator>();
 
             services.AddDbContext<LittleLiveDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Default"), x => x.MigrationsAssembly("LittleLive.Data")), ServiceLifetime.Transient);            
             services.AddAutoMapper(typeof(Startup));
@@ -112,6 +118,8 @@ namespace LittleLive.WebApi
 
             app.UseHttpsRedirection();
 
+            app.UseDetection();
+            app.UseMiddleware<DeviceExtractionMiddleware>();
             app.UseRouting();
 
             app.UseAuthentication();
